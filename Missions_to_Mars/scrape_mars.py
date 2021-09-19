@@ -6,9 +6,9 @@ import pymongo
 from splinter import Browser
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
+import json
 
-
-def scrape():
+def scrape_info():
     # Setup splinter
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=False)
@@ -23,16 +23,14 @@ def scrape():
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
    
-
     # redplanet results
     news_title = soup.find('div', class_='content_title').text
-  
     news_p = soup.find('div', class_='article_teaser_body').text
    
     # create main dictionary for mongo append
 
     dictionary = {'1':{'news_title': news_title},
-              '2':{'news_p': news_title}}
+              '2':{'news_p': news_p}}
     
     browser.quit()
     
@@ -50,23 +48,18 @@ def scrape():
    
     # https://spaceimages-mars.com/image/featured/mars3.jpg - redplanet results
 
-    news_title = soup.find_all('div', class_='floating_text_area')
-    print(news_title)
+    news_title2 = soup.find_all('div', class_='floating_text_area')
 
-
-    for news in news_title:
+    for news in news_title2:
         try:
             # Identify title
             title = news.find('h1', class_='media_feature_title').text
-            print(f"title: {title}")
             hyperlink = news.find('a', class_='showimg fancybox-thumbs')
-            print(f"link 1: {hyperlink}")
-            
             link = url + "/" +news.a['href']
-            print(link)
-            # print(f"link:{url}/{link}")
+                        
         except Exception as e:
-            print(e)
+            print(e)    
+
 
     # main dictionary - add third element
     dictionary['3']={}
@@ -78,10 +71,13 @@ def scrape():
     url = 'https://galaxyfacts-mars.com'    
     
     tables = pd.read_html(url)
+    
     df = tables[1]
     df = df.rename(columns={0:'metric',1:'value'})
     df = df.set_index('metric')
+
     json_list = df.to_dict('index')
+
     # main dictionary - add fourth element
     dictionary['4']={}
     dictionary['4']['table'] = json_list
@@ -103,3 +99,8 @@ def scrape():
     dictionary['5']['2'] = second_image
     dictionary['5']['3'] = third_image
     dictionary['5']['4'] = fourth_image
+    # dictionary.pop('_id')
+    # with open('troubleshooting.json', 'w') as json_file:
+        # json.dump(dictionary, json_file)
+    # Return results
+    return dictionary
