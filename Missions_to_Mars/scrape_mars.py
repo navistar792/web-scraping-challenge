@@ -22,13 +22,18 @@ def scrape():
     # Create BeautifulSoup object; parse with 'lxml'
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
-    # print(soup.prettify())
+   
 
     # redplanet results
     news_title = soup.find('div', class_='content_title').text
-    # print(news_title)
+  
     news_p = soup.find('div', class_='article_teaser_body').text
-    # print(news_p)
+   
+    # create main dictionary for mongo append
+
+    dictionary = {'1':{'news_title': news_title},
+              '2':{'news_p': news_title}}
+    
     browser.quit()
     
     # Setup splinter
@@ -42,11 +47,8 @@ def scrape():
     # Create BeautifulSoup object; parse with 'lxml'
     html = browser.html
     soup = BeautifulSoup(html, 'html.parser')
-    # print(soup.prettify())
-
-    # https://spaceimages-mars.com/image/featured/mars3.jpg
-
-    # redplanet results
+   
+    # https://spaceimages-mars.com/image/featured/mars3.jpg - redplanet results
 
     news_title = soup.find_all('div', class_='floating_text_area')
     print(news_title)
@@ -66,6 +68,10 @@ def scrape():
         except Exception as e:
             print(e)
 
+    # main dictionary - add third element
+    dictionary['3']={}
+    dictionary['3']['link'] = link
+    
     browser.quit()
 
     # https://galaxyfacts-mars.com
@@ -73,42 +79,27 @@ def scrape():
     
     tables = pd.read_html(url)
     df = tables[1]
-    df.style.hide_index()
-    # df.head()
+    df = df.rename(columns={0:'metric',1:'value'})
+    df = df.set_index('metric')
+    json_list = df.to_dict('index')
+    # main dictionary - add fourth element
+    dictionary['4']={}
+    dictionary['4']['table'] = json_list
 
-    # instructions from https://www.geeksforgeeks.org/how-to-render-pandas-dataframe-as-html-table/
-    html = df.to_html(index=False, header=False)
-    print(html)
-    text_file = open("mars.html", "w")
-    text_file.write(html)
-    text_file.close()
+    # Hemisphere images
 
     first_image = {"title": "Cerberus Hemisphere", "img_url": "https://marshemispheres.com/images/cerberus_enhanced.tif"}
     second_image = {"title": "Schiaparelli Hemisphere", "img_url": "https://marshemispheres.com/images/schiaparelli_enhanced.tif"}
     third_image = {"title": "Syrtis Major", "img_url": "https://marshemispheres.com/images/syrtis_major_enhanced.tif"}
     fourth_image = {"title": "Valles Marineris", "img_url": "https://marshemispheres.com/images/valles_marineris_enhanced.tif"}
 
-    hemisphere_image_urls = []
-
-    first_image_copy = first_image.copy()
-    hemisphere_image_urls.append(first_image_copy)
-
-    second_image_copy = second_image.copy()
-    hemisphere_image_urls.append(second_image_copy)
-
-    third_image_copy = third_image.copy()
-    hemisphere_image_urls.append(third_image_copy)
-
-    fourth_image_copy = fourth_image.copy()
-    hemisphere_image_urls.append(fourth_image_copy)
-
-    print(hemisphere_image_urls)
-
-    # Initialize PyMongo to work with MongoDBs
-    conn = 'mongodb://localhost:27017'
-    client = pymongo.MongoClient(conn)
-
-    
-    # Define database and collection
-    db = client.mars_db
-    collection = db.webitems
+    # main dictionary - add 5-8 elements
+    dictionary['5']={}
+    dictionary['5']['1'] = {}
+    dictionary['5']['2'] = {}
+    dictionary['5']['3'] = {}
+    dictionary['5']['4'] = {}
+    dictionary['5']['1'] = first_image
+    dictionary['5']['2'] = second_image
+    dictionary['5']['3'] = third_image
+    dictionary['5']['4'] = fourth_image
