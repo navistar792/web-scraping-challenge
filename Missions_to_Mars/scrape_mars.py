@@ -29,6 +29,8 @@ def scrape_info():
    
     # create main dictionary for mongo append
 
+    # dictionary = {'news_title': news_title},
+    #             '2':{'news_p': news_p}}
     dictionary = {'1':{'news_title': news_title},
               '2':{'news_p': news_p}}
     
@@ -72,9 +74,10 @@ def scrape_info():
     
     tables = pd.read_html(url)
     
-    df = tables[1]
-    df = df.rename(columns={0:'metric',1:'value'})
-    df = df.set_index('metric')
+    df = tables[0]
+    df.columns = df.iloc[0]
+    df = df.iloc[1: , :]
+    df = df.set_index('Mars - Earth Comparison')
 
     json_list = df.to_dict('index')
 
@@ -84,10 +87,10 @@ def scrape_info():
 
     # Hemisphere images
 
-    first_image = {"title": "Cerberus Hemisphere", "img_url": "https://marshemispheres.com/images/cerberus_enhanced.tif"}
-    second_image = {"title": "Schiaparelli Hemisphere", "img_url": "https://marshemispheres.com/images/schiaparelli_enhanced.tif"}
-    third_image = {"title": "Syrtis Major", "img_url": "https://marshemispheres.com/images/syrtis_major_enhanced.tif"}
-    fourth_image = {"title": "Valles Marineris", "img_url": "https://marshemispheres.com/images/valles_marineris_enhanced.tif"}
+    first_image = {"title": "Cerberus Hemisphere", "img_url": "https://marshemispheres.com/images/full.jpg"}
+    second_image = {"title": "Schiaparelli Hemisphere", "img_url": "https://marshemispheres.com/images/schiaparelli_enhanced-full.jpg"}
+    third_image = {"title": "Syrtis Major", "img_url": "https://marshemispheres.com/images/syrtis_major_enhanced-full.jpg"}
+    fourth_image = {"title": "Valles Marineris", "img_url": "https://marshemispheres.com/images/valles_marineris_enhanced-full.jpg"}
 
     # main dictionary - add 5-8 elements
     dictionary['5']={}
