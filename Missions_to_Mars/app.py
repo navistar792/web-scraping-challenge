@@ -3,6 +3,7 @@ from flask_pymongo import PyMongo
 import scrape_mars
 import json
 import pandas as pd
+import time
 
 app = Flask(__name__)
 

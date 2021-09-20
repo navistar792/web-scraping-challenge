@@ -7,6 +7,7 @@ from splinter import Browser
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 import json
+import time
 
 def scrape_info():
     # Setup splinter
@@ -85,12 +86,147 @@ def scrape_info():
     dictionary['4']={}
     dictionary['4']['table'] = json_list
 
+   ## Hemisphere 1
+   # Setup splinter
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
+
+    # URL of page to be scraped
+    url = 'https://marshemispheres.com/cerberus.html'
+    browser.visit(url)
+
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+    time.sleep(8)
+
+    # print(soup.prettify())
+    # hemispheres results
+    hemi_url_1= ("https://marshemispheres.com")
+    cerb_1 = soup.find_all('div', class_='downloads')
+
+    for cerb in cerb_1:
+        try:
+            # find link
+            hyperlink = cerb.find('li')
+            print(hyperlink)
+            link_cerb1 = hemi_url_1 + "/" +cerb.a['href']
+            print(link_cerb1)
+            
+        except Exception as e:
+            print(e)
+
+    browser.quit()    
+   
+    ## Hemisphere 2
+
+    # Schiaparelli Hemisphere
+    # Setup splinter
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
+
+    # URL of page to be scraped
+    url = 'https://marshemispheres.com/schiaparelli.html'
+    browser.visit(url)
+
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+    time.sleep(8)
+
+    # print(soup.prettify())
+    # Schiaparelli Hemisphereresults
+    hemi_url_2 = ("https://marshemispheres.com")
+    cerb_2 = soup.find_all('div', class_='downloads')
+
+    for cerb in cerb_2:
+        try:
+            # find link
+            hyperlink = cerb.find('li')
+            print(hyperlink)
+            link_cerb2 = hemi_url_2 + "/" +cerb.a['href']
+            print(link_cerb2)
+            
+        except Exception as e:
+            print(e)
+
+    browser.quit() 
+
+    ## Hemisphere 3
+
+    # Syrtis Major
+
+    # Setup splinter
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
+
+    # URL of page to be scraped
+    url = 'https://marshemispheres.com/syrtis.html'
+    browser.visit(url)
+
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+    time.sleep(8)
+
+    print(soup.prettify())
+
+    # Syrtis Major
+    # Schiaparelli Hemisphereresults
+    hemi_url_3= ("https://marshemispheres.com")
+    cerb_3 = soup.find_all('div', class_='downloads')
+
+    for cerb in cerb_3:
+        try:
+            # find link
+            hyperlink = cerb.find('li')
+            print(hyperlink)
+            link_cerb3 = hemi_url_3 + "/" +cerb.a['href']
+            print(link_cerb3)
+            
+        except Exception as e:
+            print(e)
+
+    browser.quit() 
+
+    ## Hemisphere 4
+    # Valles Marineris
+
+    # Setup splinter
+    executable_path = {'executable_path': ChromeDriverManager().install()}
+    browser = Browser('chrome', **executable_path, headless=False)
+
+    # URL of page to be scraped
+    url = 'https://marshemispheres.com/valles.html'
+    browser.visit(url)
+
+    html = browser.html
+    soup = BeautifulSoup(html, 'html.parser')
+    time.sleep(8)
+
+    print(soup.prettify())
+
+    # Valles Marineris Hemisphere results
+ 
+    hemi_url_4 = ("https://marshemispheres.com")
+    cerb_4 = soup.find_all('div', class_='downloads')
+
+    for cerb in cerb_4:
+        try:
+            # find link
+            hyperlink = cerb.find('li')
+            print(hyperlink)
+            link_cerb4 = hemi_url_4 + "/" +cerb.a['href']
+            print(link_cerb4)
+            
+        except Exception as e:
+            print(e)
+
+    browser.quit() 
+
     # Hemisphere images
 
-    first_image = {"title": "Cerberus Hemisphere", "img_url": "https://marshemispheres.com/images/full.jpg"}
-    second_image = {"title": "Schiaparelli Hemisphere", "img_url": "https://marshemispheres.com/images/schiaparelli_enhanced-full.jpg"}
-    third_image = {"title": "Syrtis Major", "img_url": "https://marshemispheres.com/images/syrtis_major_enhanced-full.jpg"}
-    fourth_image = {"title": "Valles Marineris", "img_url": "https://marshemispheres.com/images/valles_marineris_enhanced-full.jpg"}
+    first_image = {"title": "Cerberus Hemisphere", "img_url": link_cerb1}
+    second_image = {"title": "Schiaparelli Hemisphere", "img_url": link_cerb2}
+    third_image = {"title": "Syrtis Major", "img_url": link_cerb3}
+    fourth_image = {"title": "Valles Marineris", "img_url": link_cerb4}
 
     # main dictionary - add 5-8 elements
     dictionary['5']={}
@@ -102,6 +238,7 @@ def scrape_info():
     dictionary['5']['2'] = second_image
     dictionary['5']['3'] = third_image
     dictionary['5']['4'] = fourth_image
+    
     # dictionary.pop('_id')
     # with open('troubleshooting.json', 'w') as json_file:
         # json.dump(dictionary, json_file)
